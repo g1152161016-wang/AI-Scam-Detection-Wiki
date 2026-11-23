@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 網路詐騙偵測系統｜教學簡報</title>
+<style>
+:root{--bg:#0b1220;--panel:#121e31;--card:#182840;--ink:#edf4ff;--muted:#a9bad2;--accent:#69d3c5;--accent2:#8da8ff;--warn:#ffcc80}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Noto Sans TC",sans-serif}
+.deck{min-height:100vh;display:grid;place-items:center;padding:28px 18px 90px}
+.slide{display:none;width:min(1100px,96vw);min-height:min(650px,78vh);padding:clamp(26px,5vw,64px);border:1px solid #2b405c;border-radius:24px;background:linear-gradient(145deg,#14243a,#0f1929 70%);box-shadow:0 24px 80px #0008;position:relative;overflow:hidden}
+.slide.active{display:flex;flex-direction:column;justify-content:center;animation:in .25s ease}
+@keyframes in{from{opacity:.4;transform:translateY(8px)}to{opacity:1;transform:none}}
+.kicker{color:var(--accent);font-weight:700;letter-spacing:.12em;text-transform:uppercase;font-size:.85rem}
+h1{font-size:clamp(2.2rem,6vw,4.6rem);line-height:1.12;margin:18px 0}h2{font-size:clamp(1.8rem,4vw,3rem);margin:12px 0 24px}h3{margin:0 0 10px;color:var(--accent)}
+p,li{font-size:clamp(1rem,1.7vw,1.25rem);line-height:1.75;color:var(--muted)}
+strong{color:var(--ink)}ul{padding-left:1.3em}.lead{font-size:clamp(1.2rem,2.4vw,1.65rem);max-width:800px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-top:14px}
+.card{background:#1a2b43;border:1px solid #304967;border-radius:16px;padding:20px}
+.card p{font-size:1rem;margin:6px 0 0}
+.tag{display:inline-block;padding:7px 12px;border-radius:999px;background:#1d3e4a;color:#a9fff0;margin:5px 6px 5px 0;font-size:.9rem}
+.flow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:18px 0}
+.step{background:#1a2b43;border:1px solid #36516f;border-radius:12px;padding:13px 16px;color:var(--ink);font-weight:650}
+.arrow{color:var(--accent);font-size:1.5rem}
+.note{border-left:4px solid var(--accent);padding:12px 18px;background:#142b38;border-radius:0 12px 12px 0;margin-top:18px;color:#d8f7f1}
+table{width:100%;border-collapse:collapse;margin-top:12px;font-size:1rem}th,td{padding:12px;text-align:left;border-bottom:1px solid #344861}th{color:var(--accent)}td{color:var(--muted)}
+.footer{position:absolute;bottom:22px;left:clamp(26px,5vw,64px);right:clamp(26px,5vw,64px);display:flex;justify-content:space-between;color:#8297b3;font-size:.85rem}
+.controls{position:fixed;bottom:0;left:0;right:0;background:#09101ddd;backdrop-filter:blur(12px);border-top:1px solid #263850;padding:14px 20px;display:flex;justify-content:center;align-items:center;gap:14px;z-index:5}
+button{background:#1c3450;color:var(--ink);border:1px solid #47617f;border-radius:10px;padding:10px 18px;font-size:1rem;cursor:pointer}
+button:hover{background:#294968}button:disabled{opacity:.35;cursor:not-allowed}
+#counter{color:var(--muted);min-width:76px;text-align:center}
+.progress{position:fixed;top:0;left:0;height:4px;background:var(--accent);width:0;z-index:6;transition:width .2s}
+.small{font-size:.92rem;color:#8fa5c1}
+@media(max-width:650px){.slide{min-height:78vh;padding:26px 22px}.flow{align-items:stretch;flex-direction:column}.arrow{transform:rotate(90deg);align-self:center}table{font-size:.86rem}th,td{padding:8px 5px}}
+@media print{body{background:white;color:#111}.deck{display:block;padding:0}.slide,.slide.active{display:flex!important;min-height:100vh;width:100%;border:0;border-radius:0;box-shadow:none;page-break-after:always;background:white;color:#111}.slide p,.slide li,.small,td{color:#333}.card,.step,.note{background:#f2f5f8;color:#111;border-color:#ccc}.controls,.progress{display:none}}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<main class="deck">
+<section class="slide active">
+<div class="kicker">LLM Wiki 教學簡報</div><h1>AI 網路詐騙<br>偵測系統</h1>
+<p class="lead">從認識詐騙訊息，到理解 AI 如何協助辨識可疑內容。</p>
+<div style="margin-top:26px"><span class="tag">網路安全</span><span class="tag">自然語言處理 NLP</span><span class="tag">機器學習</span></div>
+<div class="note">學習目標：了解詐騙風險、文字分析流程，以及 AI 分類模型的角色與限制。</div>
+<div class="footer"><span>AI Scam Detection</span><span>01 / 10</span></div>
+</section>
+<section class="slide">
+<div class="kicker">01｜基本概念</div><h2>什麼是網路詐騙？</h2>
+<p class="lead">網路詐騙是利用網路、通訊軟體或電子商務平台，以虛假資訊或冒用身分等方式，誘使使用者交付金錢、個人資料或帳戶資訊。</p>
+<div class="grid">
+<div class="card"><h3>假投資</h3><p>以高報酬、保證獲利等話術吸引受害者投入資金。</p></div>
+<div class="card"><h3>釣魚訊息</h3><p>假冒銀行、平台或機構，誘導點擊連結並輸入帳密。</p></div>
+<div class="card"><h3>假冒身分</h3><p>冒充親友、客服或公務機關，製造急迫感要求轉帳。</p></div>
+</div><div class="footer"><span>資料基礎：Source_01、Source_02</span><span>02 / 10</span></div>
+</section>
+<section class="slide">
+<div class="kicker">02｜案例觀察</div><h2>詐騙訊息常見的警訊</h2>
+<div class="grid">
+<div class="card"><h3>不合理的利益</h3><p>例如「保證獲利」「短期翻倍」「穩賺不賠」。</p></div>
+<div class="card"><h3>刻意製造急迫</h3><p>例如「立即處理」「帳戶即將停用」「限時領取」。</p></div>
+<div class="card"><h3>要求敏感資訊</h3><p>要求提供密碼、驗證碼、金融帳戶或身分資料。</p></div>
+<div class="card"><h3>可疑外部連結</h3><p>網址拼字異常、來源不明，或導向非官方頁面。</p></div>
+</div>
+<div class="note">單一警訊不代表一定是詐騙；應綜合訊息內容、來源與情境判斷。</div>
+<div class="footer"><span>資料基礎：Source_02</span><span>03 / 10</span></div>
+</section>
+<section class="slide">
+<div class="kicker">03｜AI 偵測概念</div><h2>AI 如何協助辨識詐騙？</h2>
+<p class="lead">AI 系統可從大量已標記的訊息中學習文字模式，再對新訊息進行分類，提供初步風險提示。</p>
+<div class="flow"><div class="step">訊息輸入</div><div class="arrow">→</div><div class="step">文字分析</div><div class="arrow">→</div><div class="step">模型分類</div><div class="arrow">→</div><div class="step">風險提示</div></div>
+<div class="note">AI 是輔助工具，不是絕對裁判。偵測結果仍需要使用者查證。</div>
+<div class="footer"><span>資料基礎：Source_03、KN_02</span><span>04 / 10</span></div>
+</section>
+<section class="slide">
+<div class="kicker">04｜自然語言處理</div><h2>NLP：讓電腦分析文字</h2>
+<p>自然語言處理（Natural Language Processing, NLP）是讓電腦處理與分析人類語言的技術。在本專題中，NLP 負責把訊息整理成模型能使用的特徵。</p>
+<div class="grid">
+<div class="card"><h3>文字前處理</h3><p>整理空白、符號與格式，降低不必要的差異。</p></div>
+<div class="card"><h3>特徵擷取</h3><p>找出可供模型分析的詞語與文字特徵。</p></div>
+<div class="card"><h3>數值表示</h3><p>將文字轉換成數值向量，供分類模型使用。</p></div>
+</div>
+<div class="footer"><span>資料基礎：Source_04、KN_02</span><span>05 / 10</span></div>
+</section>
+<section class="slide">
+<div class="kicker">05｜文字特徵與分類</div><h2>TF-IDF、SVM 與 Random Forest</h2>
+<table><thead><tr><th>技術</th><th>在流程中的角色</th><th>要注意的限制</th></tr></thead><tbody>
+<tr><td><strong>TF-IDF</strong></td><td>將文字轉成數值特徵</td><td>較難理解深層語意</td></tr>
+<tr><td><strong>SVM</strong></td><td>依特徵建立分類邊界</td><td>需要調整模型參數</td></tr>
+<tr><td><strong>Random Forest</strong></td><td>整合多棵決策樹的判斷</td><td>整體模型較不易解釋</td></tr>
+</tbody></table>
+<div class="note">本專題規劃以 TF-IDF + SVM 作為基準模型，再以 Random Forest 作比較；目前是研究規劃，並非已完成的實驗結果。</div>
+<div class="footer"><span>資料基礎：Source_03、Source_04、Source_05、KN_02</span><span>06 / 10</span></div>
+</section>
+<section class="slide">
+<div class="kicker">06｜系統架構</div><h2>AI 防詐偵測流程</h2>
+<div class="flow"><div class="step">使用者輸入訊息</div><div class="arrow">→</div><div class="step">文字前處理</div><div class="arrow">→</div><div class="step">TF-IDF 特徵擷取</div></div>
+<div class="flow"><div class="step">SVM 分類</div><div class="arrow">＋</div><div class="step">Random Forest 分類</div><div class="arrow">→</div><div class="step">比較結果</div></div>
+<div class="flow"><div class="step">風險分析</div><div class="arrow">→</div><div class="step">顯示分類與防詐提醒</div></div>
+<p class="small">實際系統仍需建立標記資料集、訓練模型，並以獨立測試資料驗證。</p>
+<div class="footer"><span>資料基礎：KN_03</span><span>07 / 10</span></div>
+</section>
+<section class="slide">
+<div class="kicker">07｜如何評估</div><h2>不能只看準確率</h2>
+<div class="grid">
+<div class="card"><h3>Accuracy</h3><p>所有預測中，判斷正確的比例。</p></div>
+<div class="card"><h3>Precision</h3><p>被模型判定為詐騙的訊息中，真正是詐騙的比例。</p></div>
+<div class="card"><h3>Recall</h3><p>所有真正的詐騙訊息中，成功被找出的比例。</p></div>
+<div class="card"><h3>F1-score</h3><p>Precision 與 Recall 的綜合指標。</p></div>
+</div>
+<div class="note">防詐情境需特別留意漏掉詐騙訊息的風險，因此 Recall 值值得關注；但仍需同時考慮誤報。</div>
+<div class="footer"><span>資料基礎：KN_02、KN_03</span><span>08 / 10</span></div>
+</section>
+<section class="slide">
+<div class="kicker">08｜限制與安全</div><h2>AI 偵測不是百分之百</h2>
+<ul>
+<li>資料集若不完整或標記錯誤，模型可能學到錯誤模式。</li>
+<li>詐騙話術會持續改變，舊資料不一定涵蓋新型態。</li>
+<li>只分析文字可能忽略網址、圖片、帳號與對話情境。</li>
+<li>模型可能出現誤判：正常訊息被警示，或詐騙訊息未被發現。</li>
+<li>不應把密碼、驗證碼或完整金融資料輸入不可信的分析工具。</li>
+</ul>
+<div class="note">遇到可疑訊息，應透過官方網站或官方客服管道查證，不要直接點擊陌生連結。</div>
+<div class="footer"><span>資料基礎：KN_03；安全提醒為一般防詐建議</span><span>09 / 10</span></div>
+</section>
+<section class="slide">
+<div class="kicker">09｜總結</div><h2>從知識整理到 AI 防詐</h2>
+<p class="lead">本專題以 Obsidian 建立可連結的 LLM Wiki，再將詐騙案例、NLP 與機器學習知識整合成系統設計。</p>
+<div class="grid">
+<div class="card"><h3>知識庫</h3><p>保存原始資料與整理筆記，方便查詢與追溯。</p></div>
+<div class="card"><h3>AI 分析</h3><p>利用文字特徵與分類模型協助辨識可疑訊息。</p></div>
+<div class="card"><h3>持續改進</h3><p>透過測試、檢查與更新資料改善流程。</p></div>
+</div>
+<div class="note"><strong>核心觀念：</strong>AI 可以協助提高警覺，但最終仍要搭配來源查證與安全習慣。</div>
+<p class="small">知識來源：本專題 Obsidian Wiki 的 Source_01～Source_05、KN_01～KN_03。各頁內容應以原始來源筆記核對後再定稿。</p>
+<div class="footer"><span>AI Scam Detection｜教學簡報</span><span>10 / 10</span></div>
+</section>
+</main>
+<nav class="controls" aria-label="簡報控制">
+<button id="prev" type="button">← 上一頁</button><span id="counter">1 / 10</span><button id="next" type="button">下一頁 →</button><button id="fullscreen" type="button">全螢幕</button>
+</nav>
+<script>
+const slides=[...document.querySelectorAll('.slide')];let index=0;
+const counter=document.getElementById('counter'),progress=document.getElementById('progress');
+function show(n){index=Math.max(0,Math.min(slides.length-1,n));slides.forEach((s,i)=>s.classList.toggle('active',i===index));counter.textContent=`${index+1} / ${slides.length}`;progress.style.width=`${(index+1)/slides.length*100}%`;document.getElementById('prev').disabled=index===0;document.getElementById('next').disabled=index===slides.length-1;}
+document.getElementById('prev').addEventListener('click',()=>show(index-1));
+document.getElementById('next').addEventListener('click',()=>show(index+1));
+document.getElementById('fullscreen').addEventListener('click',()=>{if(!document.fullscreenElement)document.documentElement.requestFullscreen?.();else document.exitFullscreen?.();});
+document.addEventListener('keydown',e=>{if(['ArrowRight',' ','PageDown'].includes(e.key)){e.preventDefault();show(index+1)}if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();show(index-1)}if(e.key==='Home')show(0);if(e.key==='End')show(slides.length-1)});
+show(0);
+</script>
+</body>
+</html>
